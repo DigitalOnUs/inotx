@@ -12,9 +12,8 @@ import (
 	"fmt"
 	"os"
 
-    "github.com/DigitalOnUs/inotx/config"
-    "github.com/fatih/color"
-    
+	"github.com/DigitalOnUs/inotx/config"
+	"github.com/fatih/color"
 )
 
 func main() {

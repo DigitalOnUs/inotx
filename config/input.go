@@ -8,15 +8,16 @@ import (
 	"path/filepath"
 
 	hcl2 "github.com/hashicorp/hcl/v2"
+	"github.com/hashicorp/hcl/v2/gohcl"
 	hcl2syntax "github.com/hashicorp/hcl/v2/hclsyntax"
-
+	hcl2json "github.com/hashicorp/hcl/v2/json"
 )
 
 //ParseFile gets the io.Reader and the extension of the file
-func ParseFile(filename string) error {
+func ParseFile(filename string) (*Root, error) {
 	f, err := os.Open(filename)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	defer f.Close()
@@ -31,7 +32,7 @@ func ParseFile(filename string) error {
 }
 
 //Parse parses the configuration from hcl or json
-func Parse(r io.Reader, filename, extension string) error {
+func Parse(r io.Reader, filename, extension string) (*Root, error) {
 	switch extension {
 	case "hcl":
 		return parseHCL(r, filename)
@@ -40,26 +41,51 @@ func Parse(r io.Reader, filename, extension string) error {
 		return parseJSON(r, filename)
 
 	default:
-		return fmt.Errorf("extension must be either 'hcl' or 'json'")
+		return nil, fmt.Errorf("extension must be either 'hcl' or 'json'")
 
 	}
 }
 
-func parseHCL(r io.Reader, filename string) error {
+func parseHCL(r io.Reader, filename string) (*Root, error) {
 	src, err := ioutil.ReadAll(r)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	_, diag := hcl2syntax.ParseConfig(src, filename, hcl2.Pos{})
+	f, diag := hcl2syntax.ParseConfig(src, filename, hcl2.Pos{})
 
 	if diag.HasErrors() {
-		return diag
+		return nil, diag
 	}
 
-	return nil
+	var config Root
+	diag = gohcl.DecodeBody(f.Body, nil, &config)
+	if diag.HasErrors() {
+		return nil, diag
+	}
+
+	return &config, nil
 }
 
-func parseJSON(r io.Reader, filename string) error {
-	return nil
+func parseJSON(r io.Reader, filename string) (*Root, error) {
+	src, err := ioutil.ReadAll(r)
+	if err != nil {
+		return nil, err
+	}
+
+	f, diag := hcl2json.Parse(src, filename)
+
+	if diag.HasErrors() {
+		return nil, diag
+	}
+
+	var config Root
+	diag = gohcl.DecodeBody(f.Body, nil, &config)
+
+	if diag.HasErrors() {
+		return nil, diag
+	}
+
+	return &config, nil
+
 }
