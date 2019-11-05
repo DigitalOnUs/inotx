@@ -1,4 +1,3 @@
-//go:generate stringer -type=AssociationType
 package config
 
 type AssociationType int

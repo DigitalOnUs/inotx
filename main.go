@@ -35,8 +35,17 @@ func exec() int {
 			"Please provide a path to file to analyze.\n\n"))
 	}
 
+	color.Green("*** inotx @DoU alpha ***")
+
 	for _, cfg := range args {
-		fmt.Println(config.ParseFile(cfg))
+		root, err := config.ParseFile(cfg)
+		if err != nil {
+			fmt.Fprint(os.Stderr, color.RedString(
+				"Unable to load input file ", err))
+			continue
+		}
+
+		config.AddConsul(root)
 	}
 
 	return 0

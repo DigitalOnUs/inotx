@@ -87,5 +87,4 @@ func parseJSON(r io.Reader, filename string) (*Root, error) {
 	}
 
 	return &config, nil
-
 }
