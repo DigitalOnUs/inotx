@@ -23,10 +23,18 @@ func main() {
 func exec() int {
 	// add restrictions
 	var standaloneDB bool
-
+	var outputFormat string
+	/* defaults same json -> json or hcl -> hcl
+	-> json
+	-> hcl
+	*/
 	options := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	options.BoolVar(&standaloneDB, "alonedb", false,
-		"if a db servie is found its items will be allocated in a standalone client box")
+		"if a db service is found its items will be allocated in a standalone client box")
+	// output format
+	options.StringVar(&outputFormat, "format", "",
+		"output formats [json], [hcl] if no format is specified the same format of the input will be used")
+
 	options.Parse(os.Args[1:])
 	args := options.Args()
 
@@ -45,7 +53,14 @@ func exec() int {
 			continue
 		}
 
-		config.AddConsul(root)
+		newDoc, err := config.AddConsul(root)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, color.RedString(
+				"Unable to update spec ", err))
+		}
+
+		config.WriteFile(cfg, outputFormat, newDoc)
+
 	}
 
 	return 0

@@ -16,12 +16,21 @@ type Datacenter struct {
 	Default     bool   `hcl:"default,optional"`
 }
 
+//FQDN - Name
+func (dc *Datacenter) FQDN() string {
+	return "datacenter." + dc.Name
+}
+
 //Resource (load balancers)
 type Resource struct {
 	Type         string        `hcl:"type,label"`
 	Name         string        `hcl:"name,label"`
 	Associations []Association `hcl:"association,block"`
 	Location     string        `hcl:"location,optional"`
+}
+
+func (r *Resource) FQDN() string {
+	return "resource." + r.Type + "." + r.Name
 }
 
 //Service (representation of local stuff)

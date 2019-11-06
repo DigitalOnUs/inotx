@@ -1,7 +1,7 @@
 package config
 
 import (
-	"fmt"
+	"errors"
 	"io"
 	"io/ioutil"
 	"os"
@@ -11,6 +11,10 @@ import (
 	"github.com/hashicorp/hcl/v2/gohcl"
 	hcl2syntax "github.com/hashicorp/hcl/v2/hclsyntax"
 	hcl2json "github.com/hashicorp/hcl/v2/json"
+)
+
+var (
+	ErrorExtension = errors.New("extension must be either 'hcl' or 'json'")
 )
 
 //ParseFile gets the io.Reader and the extension of the file
@@ -41,7 +45,7 @@ func Parse(r io.Reader, filename, extension string) (*Root, error) {
 		return parseJSON(r, filename)
 
 	default:
-		return nil, fmt.Errorf("extension must be either 'hcl' or 'json'")
+		return nil, ErrorExtension
 
 	}
 }
