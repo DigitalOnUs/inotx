@@ -1,6 +1,10 @@
 package config
 
 import (
+	"fmt"
+	"sort"
+	"sync"
+
 	"github.com/fatih/color"
 )
 
@@ -49,6 +53,113 @@ func AddConsul(root *Root) error {
 	  in the pool and the flow egress/ingress/contains
 	- the services list will tell you the size max will calculate the clients
 	*/
+	createConsulClients(root, &consul)
 
 	return nil
+}
+
+//clientSize
+func createConsulClients(src *Root, dest *Root) {
+	// counting to remove dups associations
+
+	serviceCount := make(map[string]metadata)
+	for _, r := range src.Resources {
+		// Service Pool size
+		if r != nil && r.Type == ServicePool.String() {
+			serviceCount[r.Name] = metadata{
+				InstancesIDs: make(map[string]X),
+				Location:     r.Location,
+			}
+
+			// contains
+			if len(r.Associations) == 0 {
+				continue
+			}
+
+			for _, assoc := range r.Associations {
+				if assoc.Type == Contains.String() {
+					serviceCount[r.Name].InstancesIDs[assoc.ID] = X{}
+				}
+			}
+		}
+	}
+
+	// nothing to do
+	if len(serviceCount) == 0 {
+		color.Yellow("No services in the spec no consul clients required")
+		return
+	}
+
+	// sort by order everything we got
+	serviceOrder := make([]metadata, 0, len(serviceCount))
+
+	for k, v := range serviceCount {
+		v.Name = k
+		serviceOrder = append(serviceOrder, v)
+		fmt.Println(v)
+	}
+
+	sort.Stable(sortableMetadata(serviceOrder))
+
+	// now sorting internals
+	for i, serv := range serviceOrder {
+		serv.CreateIndex()
+		serviceOrder[i] = serv
+	}
+
+	//required elements
+	clientNumber := len(serviceOrder[len(serviceOrder)-1].InstancesIDs)
+
+	for _, r := range serviceOrder {
+		fmt.Printf("%+v\n", r)
+	}
+
+	if clientNumber <= 0 {
+		color.Yellow("No consul clients required after order because there are no instances in the service")
+	}
+
+	//consulClients := make([]*Resource, 0, clientNumber)
+	color.Green("Required min clients %d", clientNumber)
+	consulClients := make([]*Resource, 0, clientNumber)
+
+	var wg sync.WaitGroup
+
+	for i := 0; i < clientNumber; i++ {
+		wg.Add(1)
+		r := Resource{
+			Type:         ConsulClient.String(),
+			Name:         fmt.Sprintf("client-%d", i),
+			Associations: make([]Association, 0, 0),
+		}
+		consulClients = append(consulClients, &r)
+
+		go func(res *Resource, id int) {
+			defer wg.Done()
+			for _, serv := range serviceOrder {
+				//color.Yellow("worker id %d , service %s", id, serv.Name)
+				// no instances
+				if len(serv.IndexIDs) == 0 {
+					fmt.Println("nothing ... for us", id, serv.Name)
+					continue
+				}
+				if id <= len(serv.IndexIDs)-1 {
+
+					fmt.Println("-<", id, serv.Name)
+					res.Associations = append(res.Associations, Association{
+						ID:   serv.IndexIDs[id],
+						Type: Contains.String(),
+					})
+				}
+			}
+
+		}(&r, i)
+	}
+
+	wg.Wait()
+
+	for _, k := range consulClients {
+		color.Green("%+v", *k)
+	}
+	// populating the clients
+
 }

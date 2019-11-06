@@ -153,15 +153,15 @@
          "store":{
             "association":[
                {
-                  "id":"service.auth.store1",
+                  "id":"service.store.store1",
                   "type":"contains"
                },
                {
-                  "id":"service.auth.store2",
+                  "id":"service.store.store2",
                   "type":"contains"
                },
                {
-                  "id":"service.auth.store3",
+                  "id":"service.store.store3",
                   "type":"contains"
                }
             ],
