@@ -16,7 +16,10 @@ output:
 
 </div>
 
-#### Pending 
-Fix issues with the output json because hcl is not standard
+#### Pending items
+-> Firewall rules and single instance
+-> Integration with Polo's code
+-> Connection with azure backend to feed
+-> Plugin for vscode
 
 WIP
