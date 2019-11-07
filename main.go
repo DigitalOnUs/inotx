@@ -49,14 +49,14 @@ func exec() int {
 		root, err := config.ParseFile(cfg)
 		if err != nil {
 			fmt.Fprint(os.Stderr, color.RedString(
-				"Unable to load input file ", err))
+				"Unable to load input file %s", err))
 			continue
 		}
 
 		newDoc, err := config.AddConsul(root)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, color.RedString(
-				"Unable to update spec ", err))
+				"Unable to update spec %s", err))
 			continue
 		}
 

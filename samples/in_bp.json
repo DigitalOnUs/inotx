@@ -225,14 +225,14 @@
          "db1":{
             "port":5432,
             "meta":{
-               "sofware":"postgres",
+               "software":"postgres",
                "role":"primary"
             }
          },
          "db2":{
             "port":5432,
             "meta":{
-               "sofware":"postgres",
+               "software":"postgres",
                "role":"secondary"
             }
          }
@@ -309,7 +309,7 @@
             "port":7001,
             "address":"localhost",
             "meta":{
-               "sofware":"custom-logger",
+               "software":"custom-logger",
                "role":"primary"
             }
          },
@@ -344,7 +344,7 @@
             "port":8101,
             "address":"localhost",
             "meta":{
-               "sofware":"sms"
+               "software":"sms"
             }
          },
          "pay3":{

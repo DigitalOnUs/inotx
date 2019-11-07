@@ -1,0 +1,395 @@
+{
+	"datacenter": {
+		"dc1": {
+			"description": "Main datacenter",
+			"default": false
+		}
+	},
+	"resource": {
+		"consul-client": {
+			"dc1-client1": {
+				"Associations": [
+					{
+						"id": "service.auth.auth1",
+						"type": "contains"
+					},
+					{
+						"id": "service.log.log1",
+						"type": "contains"
+					},
+					{
+						"id": "service.noty.not1",
+						"type": "contains"
+					},
+					{
+						"id": "service.web.web1",
+						"type": "contains"
+					},
+					{
+						"id": "service.store.store1",
+						"type": "contains"
+					},
+					{
+						"id": "service.payment.pay1",
+						"type": "contains"
+					},
+					{
+						"id": "resource.consul-cluster.cluster-dc1",
+						"type": "ingress"
+					},
+					{
+						"id": "resource.consul-cluster.cluster-dc1",
+						"type": "egress"
+					}
+				],
+				"location": "datacenter.dc1"
+			},
+			"dc1-client2": {
+				"Associations": [
+					{
+						"id": "service.auth.auth2",
+						"type": "contains"
+					},
+					{
+						"id": "service.log.log2",
+						"type": "contains"
+					},
+					{
+						"id": "service.noty.not2",
+						"type": "contains"
+					},
+					{
+						"id": "service.web.web2",
+						"type": "contains"
+					},
+					{
+						"id": "service.store.store2",
+						"type": "contains"
+					},
+					{
+						"id": "service.payment.pay2",
+						"type": "contains"
+					},
+					{
+						"id": "resource.consul-cluster.cluster-dc1",
+						"type": "ingress"
+					},
+					{
+						"id": "resource.consul-cluster.cluster-dc1",
+						"type": "egress"
+					}
+				],
+				"location": "datacenter.dc1"
+			},
+			"dc1-client3": {
+				"Associations": [
+					{
+						"id": "service.web.web3",
+						"type": "contains"
+					},
+					{
+						"id": "service.store.store3",
+						"type": "contains"
+					},
+					{
+						"id": "service.payment.pay3",
+						"type": "contains"
+					},
+					{
+						"id": "resource.consul-cluster.cluster-dc1",
+						"type": "ingress"
+					},
+					{
+						"id": "resource.consul-cluster.cluster-dc1",
+						"type": "egress"
+					}
+				],
+				"location": "datacenter.dc1"
+			},
+			"dc1-client4": {
+				"Associations": [
+					{
+						"id": "service.payment.pay4",
+						"type": "contains"
+					},
+					{
+						"id": "resource.consul-cluster.cluster-dc1",
+						"type": "ingress"
+					},
+					{
+						"id": "resource.consul-cluster.cluster-dc1",
+						"type": "egress"
+					}
+				],
+				"location": "datacenter.dc1"
+			},
+			"dc1-client5": {
+				"Associations": [
+					{
+						"id": "service.payment.pay5",
+						"type": "contains"
+					},
+					{
+						"id": "resource.consul-cluster.cluster-dc1",
+						"type": "ingress"
+					},
+					{
+						"id": "resource.consul-cluster.cluster-dc1",
+						"type": "egress"
+					}
+				],
+				"location": "datacenter.dc1"
+			}
+		},
+		"consul-cluster": {
+			"cluster-dc1": {
+				"Associations": [
+					{
+						"id": "resource.consul-server.dc1-server3",
+						"type": "contains"
+					},
+					{
+						"id": "resource.consul-server.dc1-server1",
+						"type": "contains"
+					},
+					{
+						"id": "resource.consul-server.dc1-server2",
+						"type": "contains"
+					}
+				],
+				"location": "datacenter.dc1"
+			}
+		},
+		"consul-server": {
+			"dc1-server1": {
+				"Associations": [
+					{
+						"id": "resource.consul-server.dc1-server2",
+						"type": "egress"
+					},
+					{
+						"id": "resource.consul-server.dc1-server2",
+						"type": "ingress"
+					},
+					{
+						"id": "resource.consul-server.dc1-server3",
+						"type": "egress"
+					},
+					{
+						"id": "resource.consul-server.dc1-server3",
+						"type": "ingress"
+					}
+				],
+				"location": "datacenter.dc1"
+			},
+			"dc1-server2": {
+				"Associations": [
+					{
+						"id": "resource.consul-server.dc1-server1",
+						"type": "egress"
+					},
+					{
+						"id": "resource.consul-server.dc1-server1",
+						"type": "ingress"
+					},
+					{
+						"id": "resource.consul-server.dc1-server3",
+						"type": "egress"
+					},
+					{
+						"id": "resource.consul-server.dc1-server3",
+						"type": "ingress"
+					}
+				],
+				"location": "datacenter.dc1"
+			},
+			"dc1-server3": {
+				"Associations": [
+					{
+						"id": "resource.consul-server.dc1-server1",
+						"type": "egress"
+					},
+					{
+						"id": "resource.consul-server.dc1-server1",
+						"type": "ingress"
+					},
+					{
+						"id": "resource.consul-server.dc1-server2",
+						"type": "egress"
+					},
+					{
+						"id": "resource.consul-server.dc1-server2",
+						"type": "ingress"
+					}
+				],
+				"location": "datacenter.dc1"
+			}
+		}
+	},
+	"service": {
+		"auth": {
+			"auth1": {
+				"meta": {
+					"version": "1",
+					"software": "ldap",
+					"extra": {}
+				},
+				"port": 55,
+				"address": "localhost"
+			},
+			"auth2": {
+				"meta": {
+					"version": "3",
+					"software": "nginx",
+					"extra": {}
+				},
+				"port": 55,
+				"address": "localhost"
+			}
+		},
+		"db": {
+			"db1": {
+				"meta": {
+					"role": "primary",
+					"software": "postgres",
+					"extra": {}
+				},
+				"port": 5432
+			},
+			"db2": {
+				"meta": {
+					"role": "secondary",
+					"software": "postgres",
+					"extra": {}
+				},
+				"port": 5432
+			}
+		},
+		"log": {
+			"log1": {
+				"meta": {
+					"role": "primary",
+					"software": "custom-logger",
+					"extra": {}
+				},
+				"port": 7001,
+				"address": "localhost"
+			},
+			"log2": {
+				"meta": {
+					"role": "secondary",
+					"software": "custom-logger",
+					"extra": {}
+				},
+				"port": 8001,
+				"address": "localhost"
+			}
+		},
+		"noty": {
+			"not1": {
+				"port": 8000,
+				"address": "localhost"
+			},
+			"not2": {
+				"port": 8000,
+				"address": "localhost"
+			}
+		},
+		"payment": {
+			"pay1": {
+				"meta": {
+					"software": "outlook",
+					"extra": {}
+				},
+				"port": 8101,
+				"address": "localhost"
+			},
+			"pay2": {
+				"meta": {
+					"software": "sms",
+					"extra": {}
+				},
+				"port": 8101,
+				"address": "localhost"
+			},
+			"pay3": {
+				"meta": {
+					"software": "whatsapp",
+					"extra": {}
+				},
+				"port": 8101,
+				"address": "localhost"
+			},
+			"pay4": {
+				"meta": {
+					"software": "outlook",
+					"extra": {}
+				},
+				"port": 8101,
+				"address": "localhost"
+			},
+			"pay5": {
+				"meta": {
+					"software": "outlook",
+					"extra": {}
+				},
+				"port": 8101,
+				"address": "localhost"
+			}
+		},
+		"store": {
+			"store1": {
+				"meta": {
+					"software": "rails",
+					"extra": {}
+				},
+				"port": 3000,
+				"address": "localhost"
+			},
+			"store2": {
+				"meta": {
+					"software": "rails",
+					"extra": {}
+				},
+				"port": 3000,
+				"address": "localhost"
+			},
+			"store3": {
+				"meta": {
+					"role": "primary",
+					"software": "rails",
+					"extra": {}
+				},
+				"port": 3100,
+				"address": "localhost"
+			}
+		},
+		"web": {
+			"web1": {
+				"meta": {
+					"version": "1",
+					"software": "nginx",
+					"extra": {}
+				},
+				"port": 80,
+				"address": "localhost",
+				"protocol": "https"
+			},
+			"web2": {
+				"meta": {
+					"version": "2",
+					"software": "nginx",
+					"extra": {}
+				},
+				"port": 80,
+				"address": "localhost",
+				"protocol": "https"
+			},
+			"web3": {
+				"port": 80,
+				"address": "localhost",
+				"protocol": "https"
+			}
+		}
+	}
+}
