@@ -88,7 +88,7 @@ type Service struct {
 type AliasService Service
 
 type ServiceJSON struct {
-	Meta interface{} `json"meta,omitempty"`
+	Meta interface{} `json:"meta,omitempty"`
 	*AliasService
 }
 

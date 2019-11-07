@@ -12,8 +12,8 @@ import (
 	"github.com/hashicorp/hcl/v2/hclwrite"
 )
 
-//WriteFile saves the tifle
-func WriteFile(filename, format string, root *Root) error {
+//WriteFile returns outcome file and error just in case
+func WriteFile(filename, format string, root *Root) (string, error) {
 	extension := filepath.Ext(filename)
 	if len(extension) > 0 {
 		extension = extension[1:]
@@ -28,15 +28,14 @@ func WriteFile(filename, format string, root *Root) error {
 	}
 
 	filename = fmt.Sprintf("%s.%s", filename, format)
-
 	f, err := os.Create(filename)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	defer f.Close()
 
-	return Write(f, format, root)
+	return filename, Write(f, format, root)
 }
 
 //Write info to do

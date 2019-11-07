@@ -57,9 +57,17 @@ func exec() int {
 		if err != nil {
 			fmt.Fprintf(os.Stderr, color.RedString(
 				"Unable to update spec ", err))
+			continue
 		}
 
-		config.WriteFile(cfg, outputFormat, newDoc)
+		filename, err := config.WriteFile(cfg, outputFormat, newDoc)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, color.RedString(
+				"Error writing outcome file %s", err))
+			continue
+		}
+
+		color.Green("Output spec %s", filename)
 
 	}
 

@@ -130,7 +130,7 @@ func createConsulClients(src *Root, dest *Root, dc *Datacenter) {
 			Location:     dc.FQDN(),
 		}
 		consulServers = append(consulServers, &server)
-		uniques[dc.FQDN()] = X{}
+		uniques[server.FQDN()] = X{}
 	}
 
 	// adding paths
@@ -189,7 +189,7 @@ func createConsulClients(src *Root, dest *Root, dc *Datacenter) {
 
 	finalResourceList := make([]*Resource, 0, resourceSize)
 	finalResourceList = append(finalResourceList, consulClients...)
-	finalResourceList = append(finalResourceList, consulClients...)
+	finalResourceList = append(finalResourceList, consulServers...)
 	finalResourceList = append(finalResourceList, &cluster)
 
 	dest.Resources = finalResourceList
