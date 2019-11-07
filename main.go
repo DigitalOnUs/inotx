@@ -40,7 +40,8 @@ func exec() int {
 
 	if len(args) == 0 {
 		fmt.Fprintf(os.Stderr, color.RedString(
-			"Please provide a path to file to analyze.\n\n"))
+			"Please provide a path to file to analyze.\n"))
+		return 1
 	}
 
 	color.Green("*** inotx @DoU alpha ***")
@@ -49,17 +50,25 @@ func exec() int {
 		root, err := config.ParseFile(cfg)
 		if err != nil {
 			fmt.Fprint(os.Stderr, color.RedString(
-				"Unable to load input file ", err))
+				"Unable to load input file %s", err))
 			continue
 		}
 
 		newDoc, err := config.AddConsul(root)
 		if err != nil {
 			fmt.Fprintf(os.Stderr, color.RedString(
-				"Unable to update spec ", err))
+				"Unable to update spec %s", err))
+			continue
 		}
 
-		config.WriteFile(cfg, outputFormat, newDoc)
+		filename, err := config.WriteFile(cfg, outputFormat, newDoc)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, color.RedString(
+				"Error writing outcome file %s", err))
+			continue
+		}
+
+		color.Green("Output spec %s", filename)
 
 	}
 
