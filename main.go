@@ -40,7 +40,8 @@ func exec() int {
 
 	if len(args) == 0 {
 		fmt.Fprintf(os.Stderr, color.RedString(
-			"Please provide a path to file to analyze.\n\n"))
+			"Please provide a path to file to analyze.\n"))
+		return 1
 	}
 
 	color.Green("*** inotx @DoU alpha ***")
