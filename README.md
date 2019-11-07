@@ -5,7 +5,6 @@ and translate it to a new picture with consul instead the LB.
 #### sample inputs 
 -> samples/input.json
 
-<div align="center">
 #### sample usage
 ![sample](.img/sample.png)
 
@@ -14,7 +13,6 @@ input:
 output:
   <initial_blue_print>consul.json|hcl
 
-</div>
 
 #### Pending items
 -> Firewall rules and single instance
