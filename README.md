@@ -15,9 +15,11 @@ output:
 
 
 #### Pending items
--> Firewall rules and single instance
--> Integration with Polo's code
--> Connection with azure backend to feed
--> Plugin for vscode
+-Firewall rules and single instance
+-Integration with Polo's code
+-Connection with azure backend to feed
 
 WIP
+
+#### credits
+Made with :heart: by Innovation Team . We're always happy to receive your feedback! (File an issue)
