@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"sort"
+	"strings"
 	"sync"
 
 	"github.com/fatih/color"
@@ -30,32 +31,73 @@ func AddConsul(root *Root) (*Root, error) {
 
 //clientSize
 func createConsulClients(src *Root, dest *Root, dc *Datacenter) {
-	serviceCount := make(map[string]metadata)
-	for _, r := range src.Resources {
-		// Service Pool size
-		if r != nil && r.Type == ServicePool.String() && r.Location == dc.FQDN() {
-			serviceCount[r.Name] = metadata{
-				InstancesIDs: make(map[string]X),
-				Location:     r.Location,
-			}
+	counter := make(chan map[string]metadata)
+	counterFw := make(chan map[string]X)
 
-			// contains
-			if len(r.Associations) == 0 {
-				continue
-			}
+	// counting servs
+	go func() {
+		defer close(counter)
 
-			for _, assoc := range r.Associations {
-				if assoc.Type == Contains.String() {
-					serviceCount[r.Name].InstancesIDs[assoc.ID] = X{}
+		serviceCount := make(map[string]metadata)
+		for _, r := range src.Resources {
+			// Service Pool size
+			if r != nil && r.Type == ServicePool.String() && r.Location == dc.FQDN() {
+
+				serviceCount[r.Name] = metadata{
+					InstancesIDs: make(map[string]X),
+					Location:     r.Location,
+				}
+
+				// contains
+				if len(r.Associations) == 0 {
+					continue
+				}
+
+				for _, assoc := range r.Associations {
+					if assoc.Type == Contains.String() {
+						serviceCount[r.Name].InstancesIDs[assoc.ID] = X{}
+					}
 				}
 			}
 		}
-	}
+		counter <- serviceCount
+	}()
+
+	// firewall resources
+	go func() {
+		defer close(counterFw)
+		serviceCount := make(map[string]X)
+
+		for _, r := range src.Resources {
+			if r != nil && r.Type == Firewall.String() && r.Location == dc.FQDN() {
+				if len(r.Associations) == 0 {
+					continue
+				}
+
+				for _, assoc := range r.Associations {
+					// we don't care the type just want to get services
+					if strings.HasPrefix(assoc.ID, "service.") {
+						serviceCount[assoc.ID] = X{}
+					}
+				}
+
+			}
+		}
+
+		counterFw <- serviceCount
+	}()
+
+	serviceCount := <-counter
+	serviceInFW := <-counterFw
 
 	// nothing to do
-	if len(serviceCount) == 0 {
+	if serviceCount == nil || len(serviceCount) == 0 {
 		color.Yellow("No services in the spec no consul clients required")
 		return
+	}
+
+	if serviceInFW != nil && len(serviceInFW) > 0 {
+		crosscheck(serviceCount, serviceInFW, dc)
 	}
 
 	// sort by order everything we got
@@ -194,4 +236,35 @@ func createConsulClients(src *Root, dest *Root, dc *Datacenter) {
 
 	dest.Resources = finalResourceList
 	dest.Datacenters = src.Datacenters
+}
+
+func crosscheck(services map[string]metadata, fw map[string]X, dc *Datacenter) {
+	// getting all services
+	current := map[string]X{}
+	for _, meta := range services {
+		for m := range meta.InstancesIDs {
+			current[m] = X{}
+		}
+	}
+
+	// doing checking if fw are missing ... crappy
+	for f := range fw {
+		if _, ok := current[f]; !ok {
+			// creating own group like service.db.db1 -> fw.service.db
+			uri := strings.Split(f, ".")
+			if len(uri) < 3 {
+				color.Yellow("error processing ref %s", f)
+			}
+			// to be added
+			fqdn := fmt.Sprintf("fw.service.%s", uri[1])
+			if _, ok := services[fqdn]; !ok {
+				services[fqdn] = metadata{
+					InstancesIDs: make(map[string]X),
+					Location:     dc.FQDN(),
+				}
+			}
+
+			services[fqdn].InstancesIDs[f] = X{}
+		}
+	}
 }
