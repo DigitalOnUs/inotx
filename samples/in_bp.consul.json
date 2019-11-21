@@ -22,6 +22,10 @@
 						"type": "contains"
 					},
 					{
+						"id": "service.db.db1",
+						"type": "contains"
+					},
+					{
 						"id": "service.web.web1",
 						"type": "contains"
 					},
@@ -56,6 +60,10 @@
 					},
 					{
 						"id": "service.noty.not2",
+						"type": "contains"
+					},
+					{
+						"id": "service.db.db2",
 						"type": "contains"
 					},
 					{
@@ -145,15 +153,15 @@
 			"cluster-dc1": {
 				"Associations": [
 					{
+						"id": "resource.consul-server.dc1-server3",
+						"type": "contains"
+					},
+					{
 						"id": "resource.consul-server.dc1-server1",
 						"type": "contains"
 					},
 					{
 						"id": "resource.consul-server.dc1-server2",
-						"type": "contains"
-					},
-					{
-						"id": "resource.consul-server.dc1-server3",
 						"type": "contains"
 					}
 				],
@@ -206,19 +214,19 @@
 			"dc1-server3": {
 				"Associations": [
 					{
-						"id": "resource.consul-server.dc1-server2",
+						"id": "resource.consul-server.dc1-server1",
 						"type": "egress"
 					},
 					{
-						"id": "resource.consul-server.dc1-server2",
+						"id": "resource.consul-server.dc1-server1",
 						"type": "ingress"
 					},
 					{
-						"id": "resource.consul-server.dc1-server1",
+						"id": "resource.consul-server.dc1-server2",
 						"type": "egress"
 					},
 					{
-						"id": "resource.consul-server.dc1-server1",
+						"id": "resource.consul-server.dc1-server2",
 						"type": "ingress"
 					}
 				],
